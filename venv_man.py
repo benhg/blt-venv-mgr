@@ -51,9 +51,13 @@ def parse_args():
                         action="store_true",
                         default=False,
                         help="Print the command to activate (engage) a virtual environment")
+    parser.add_argument("-s", "--show",
+                        action="store_true",
+                        default=False,
+                        help="Show a list of packages installed in specified environment")
     args = parser.parse_args()
 
-    if not any([args.list, args.activate, args.remove, args.add, args.delete, args.create]):
+    if not any([args.list, args.activate, args.remove, args.add, args.delete, args.create, args.show]):
         print("ERROR: No action specified.")
         sys.exit(1)
 
@@ -76,6 +80,10 @@ def parse_args():
 
     if any([args.create, args.delete]) and any([args.add, args.remove]):
         print("ERROR: Add/Remove and Create/Delete are not supported together.")
+        sys.exit(1)
+
+    if args.show and any([args.activate, args.remove, args.add, args.delete, args.create]):
+        print("ERROR: Show cannot be specified with other actions")
         sys.exit(1)
 
     return args
