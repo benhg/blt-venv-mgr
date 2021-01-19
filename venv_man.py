@@ -88,5 +88,9 @@ def parse_args():
 
     return args
 
+def run_cmds(args):
+    pass
+
 if __name__ == '__main__':
     args = parse_args()
+    run_cmds(args)
