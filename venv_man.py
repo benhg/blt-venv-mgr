@@ -96,10 +96,12 @@ def parse_args():
 
 def list_venvs():
     print("Listing Virtual Environments:")
-    directories = os.listdir(config["BASE_VENV_PATH"])
+    directories = os.listdir(config.BASE_VENV_PATH)
+    if len(directories) == 0:
+        print("\tNone Found.")
     for directory in directories:
         if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
-            print(f"{directory}")
+            print(f"\t{directory}")
 
 
 if __name__ == '__main__':
