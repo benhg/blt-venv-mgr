@@ -10,6 +10,7 @@ BLT-specific script for creating, deleting,
 
 import argparse
 import sys
+import subprocess
 import os
 import collections
 
@@ -92,9 +93,20 @@ def parse_args():
         print("ERROR: Show cannot be specified with other actions")
         sys.exit(1)
 
+    if args.create:
+        create_virtualenv(args.name)
+
+    if args.delete:
+        remove_virtualenv(args.name)
+
     return args
 
 def list_venvs():
+    """
+    List all virtual environments in directory `config.BASE_VENV_PATH`
+        Assume that if file is a directory and `config.BASE_VENV_PATH/bin/activate`
+        both exist, it is in fact a virtual env.
+    """
     print("Listing Virtual Environments:")
     directories = os.listdir(config.BASE_VENV_PATH)
     if len(directories) == 0:
@@ -103,6 +115,17 @@ def list_venvs():
         if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
             print(f"\t{directory}")
 
+def remove_virtualenv(name):
+    """
+    Delete a virtual environment with name :param name.
+    """
+    pass
+
+def create_virtualenv(name):
+    """
+    Create an empty virtual environment with name :param name.
+    """
+    pass
 
 if __name__ == '__main__':
     args = parse_args()
