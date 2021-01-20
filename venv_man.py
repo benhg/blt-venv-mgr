@@ -135,7 +135,12 @@ def create_virtualenv(name):
     """
     Create an empty virtual environment with name :param name.
     """
-    pass
+    dir_path = f"{config.BASE_VENV_PATH}/{name}"
+    if os.path.exists(dir_path):
+        print(f"ERROR: name {name} already taken.")
+        exit(1)
+    subprocess.check_call(["cd", config.BASE_VENV_PATH, ";", "virtualenv", name])
+
 
 if __name__ == '__main__':
     args = parse_args()
