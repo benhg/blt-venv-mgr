@@ -105,6 +105,12 @@ def parse_args():
     if args.activate:
         show_activate_cmd(args.name)
 
+    if len(args.add) > 0:
+        add_pkgs(args.add, args.name)
+
+    if len(args.remove) > 0:
+        remove_pkgs(args.remove, args.name)
+
     return args
 
 def list_venvs():
@@ -119,28 +125,26 @@ def list_venvs():
         print("\tNone Found.")
         sys.exit(0)
     for directory in directories:
-        if os.path.isdir(f"{config.BASE_VENV_PATH}/{directory}") and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
+        if _venv_exists(directory):
             print(f"\t{directory}")
 
 def remove_virtualenv(name, force):
     """
     Delete a virtual environment with name :param name.
     """
-    dir_path = f"{config.BASE_VENV_PATH}/{name}"
-    if not os.path.isdir(dir_path):
+    if not os.path.isdir(_dir_path(name)):
         print(f"ERROR: could not find environment {name}")
         sys.exit(1)
     if not force and input(f"Are you sure you want to delete virtualenv {name}? y/N ").lower() != "y":
         print("Aborting.")
         sys.exit(0)
-    subprocess.check_call(["rm", "-rf", dir_path])
+    subprocess.check_call(["rm", "-rf", _dir_path(name)])
 
 def create_virtualenv(name):
     """
     Create an empty virtual environment with name :param name.
     """
-    dir_path = f"{config.BASE_VENV_PATH}/{name}"
-    if os.path.exists(dir_path):
+    if os.path.exists(_dir_path(name)):
         print(f"ERROR: name {name} already taken.")
         sys.exit(1)
     subprocess.check_call(" ".join(["cd", config.BASE_VENV_PATH, ";", "virtualenv", name]), shell=True)
@@ -154,6 +158,30 @@ def show_activate_cmd(name):
         sys.exit(1)
     print(f"To activate the virtualenv {name}, use the following command:")
     print(f"\tsource {_dir_path(name)}/bin/activate")
+
+def add_pkgs(pkgs, name):
+    """
+    Add packages :param pkgs to virtualenv :param name
+    """
+    if not _venv_exists(name):
+        print(f"ERROR: Could not find virtualenv {name}")
+        sys.exit(1)
+    cmd_base = f"\tsource {_dir_path(name)}/bin/activate;"
+    for pkg in pkgs:
+        cmd_base += f"pip install {pkg};"
+    cmd_base += "deactivate"
+
+def remove_pkgs(pkgs, name):
+    """
+    Remove packages :param pkgs from virtualenv :param name
+    """
+    if not _venv_exists(name):
+        print(f"ERROR: Could not find virtualenv {name}")
+        sys.exit(1)
+    cmd_base = f"\tsource {_dir_path(name)}/bin/activate;"
+    for pkg in pkgs:
+        cmd_base += f"pip uninstall {pkg};"
+    cmd_base += "deactivate"
 
 def _dir_path(name):
     return f"{config.BASE_VENV_PATH}/{name}"
