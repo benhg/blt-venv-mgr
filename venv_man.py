@@ -50,7 +50,7 @@ def parse_args():
         "-a",
         "--add",
         type=str,
-        default=None,
+        default=[],
         nargs="+",
         help=
         "Add specified python packages to specified virtual environmentwith pip."
@@ -59,7 +59,7 @@ def parse_args():
         "-r",
         "--remove",
         type=str,
-        default=None,
+        default=[],
         nargs="+",
         help=
         "Remove specified python packages from specified virtual environment with pip."
@@ -190,7 +190,8 @@ def show_activate_cmd(name):
         print(f"ERROR: Could not find virtualenv {name}")
         sys.exit(1)
     print(f"To activate the virtualenv {name}, use the following command:")
-    print(f"\tsource {_dir_path(name)}/bin/activate")
+    print(f"\t`source {_dir_path(name)}/bin/activate`")
+    print("You can always deactivate a virtualenv with the command `deactivate`")
 
 
 def add_pkgs(pkgs, name):
@@ -204,6 +205,7 @@ def add_pkgs(pkgs, name):
     for pkg in pkgs:
         cmd_base += f"pip install {pkg};"
     cmd_base += "deactivate"
+    subprocess.check_call(cmd_base, shell=True)
 
 
 def remove_pkgs(pkgs, name):
@@ -217,6 +219,7 @@ def remove_pkgs(pkgs, name):
     for pkg in pkgs:
         cmd_base += f"pip uninstall {pkg};"
     cmd_base += "deactivate"
+    subprocess.check_call(cmd_base, shell=True)
 
 
 def _dir_path(name):
