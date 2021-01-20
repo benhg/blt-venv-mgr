@@ -225,6 +225,7 @@ def remove_pkgs(pkgs, name):
     cmd_base += "deactivate"
     subprocess.check_call(cmd_base, shell=True)
 
+
 def show_pkgs(name):
     """
     Print all package names in a virtualenv specified by :param name
@@ -235,6 +236,7 @@ def show_pkgs(name):
     cmd_base = f"\tsource {_dir_path(name)}/bin/activate;"
     cmd_base += "pip freeze --local"
     subprocess.check_call(cmd_base, shell=True)
+
 
 def _dir_path(name):
     return f"{config.BASE_VENV_PATH}/{name}"
