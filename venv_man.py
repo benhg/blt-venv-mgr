@@ -115,7 +115,7 @@ def list_venvs():
     if len(directories) == 0:
         print("\tNone Found.")
     for directory in directories:
-        if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
+        if os.path.isdir(f"{config.BASE_VENV_PATH}/{directory}") and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
             print(f"\t{directory}")
 
 def remove_virtualenv(name, force):
@@ -126,7 +126,7 @@ def remove_virtualenv(name, force):
     if not os.path.isdir(dir_path):
         print(f"ERROR: could not find environment {name}")
         exit(1)
-    if not force and input(f"Are you sure you want to delete virtualenv {name}? y/N").lower() != "y":
+    if not force and input(f"Are you sure you want to delete virtualenv {name}? y/N ").lower() != "y":
         print("Aborting.")
         exit(0)
     subprocess.check_call(["rm", "-rf", dir_path])
@@ -139,7 +139,7 @@ def create_virtualenv(name):
     if os.path.exists(dir_path):
         print(f"ERROR: name {name} already taken.")
         exit(1)
-    subprocess.check_call(["cd", config.BASE_VENV_PATH, ";", "virtualenv", name])
+    subprocess.check_call(" ".join(["cd", config.BASE_VENV_PATH, ";", "virtualenv", name]), shell=True)
 
 
 if __name__ == '__main__':
