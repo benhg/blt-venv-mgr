@@ -102,6 +102,9 @@ def parse_args():
     if args.delete:
         remove_virtualenv(args.name, args.yes)
 
+    if args.activate:
+        show_activate_cmd(args.name)
+
     return args
 
 def list_venvs():
@@ -114,6 +117,7 @@ def list_venvs():
     directories = os.listdir(config.BASE_VENV_PATH)
     if len(directories) == 0:
         print("\tNone Found.")
+        sys.exit(0)
     for directory in directories:
         if os.path.isdir(f"{config.BASE_VENV_PATH}/{directory}") and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
             print(f"\t{directory}")
@@ -125,10 +129,10 @@ def remove_virtualenv(name, force):
     dir_path = f"{config.BASE_VENV_PATH}/{name}"
     if not os.path.isdir(dir_path):
         print(f"ERROR: could not find environment {name}")
-        exit(1)
+        sys.exit(1)
     if not force and input(f"Are you sure you want to delete virtualenv {name}? y/N ").lower() != "y":
         print("Aborting.")
-        exit(0)
+        sys.exit(0)
     subprocess.check_call(["rm", "-rf", dir_path])
 
 def create_virtualenv(name):
@@ -138,9 +142,25 @@ def create_virtualenv(name):
     dir_path = f"{config.BASE_VENV_PATH}/{name}"
     if os.path.exists(dir_path):
         print(f"ERROR: name {name} already taken.")
-        exit(1)
+        sys.exit(1)
     subprocess.check_call(" ".join(["cd", config.BASE_VENV_PATH, ";", "virtualenv", name]), shell=True)
 
+def show_activate_cmd(name):
+    """
+    Print the command used to activate the named virtualenv.
+    """
+    if not _venv_exists(name):
+        print(f"ERROR: Could not find virtualenv {name}")
+        sys.exit(1)
+    print(f"To activate the virtualenv {name}, use the following command:")
+    print(f"\tsource {_dir_path(name)}/bin/activate")
+
+def _dir_path(name):
+    return f"{config.BASE_VENV_PATH}/{name}"
+
+def _venv_exists(name):
+    dir_path = f"{config.BASE_VENV_PATH}/{name}"
+    return os.path.isdir(dir_path) and os.path.exists(f"{dir_path}/bin/activate")
 
 if __name__ == '__main__':
     args = parse_args()
