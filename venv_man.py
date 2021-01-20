@@ -57,6 +57,10 @@ def parse_args():
                         action="store_true",
                         default=False,
                         help="Show a list of packages installed in specified environment")
+    parser.add_argument("-y", "--yes",
+                        action="store_true",
+                        default=False,
+                        help="Force remove, do not ask for confirmation.")
     args = parser.parse_args()
 
     if not any([args.list, args.activate, args.remove, args.add, args.delete, args.create, args.show]):
@@ -96,7 +100,7 @@ def parse_args():
         create_virtualenv(args.name)
 
     if args.delete:
-        remove_virtualenv(args.name)
+        remove_virtualenv(args.name, args.yes)
 
     return args
 
@@ -114,11 +118,18 @@ def list_venvs():
         if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
             print(f"\t{directory}")
 
-def remove_virtualenv(name):
+def remove_virtualenv(name, force):
     """
     Delete a virtual environment with name :param name.
     """
-    pass
+    dir_path = f"{config.BASE_VENV_PATH}/{name}"
+    if not os.path.isdir(dir_path):
+        print(f"ERROR: could not find environment {name}")
+        exit(1)
+    if not force and input(f"Are you sure you want to delete virtualenv {name}? y/N").lower() != "y":
+        print("Aborting.")
+        exit(0)
+    subprocess.check_call(["rm", "-rf", dir_path])
 
 def create_virtualenv(name):
     """
