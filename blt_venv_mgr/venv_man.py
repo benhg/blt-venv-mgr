@@ -191,7 +191,8 @@ def show_activate_cmd(name):
         sys.exit(1)
     print(f"To activate the virtualenv {name}, use the following command:")
     print(f"\t`source {_dir_path(name)}/bin/activate`")
-    print("You can always deactivate a virtualenv with the command `deactivate`")
+    print(
+        "You can always deactivate a virtualenv with the command `deactivate`")
 
 
 def add_pkgs(pkgs, name):
