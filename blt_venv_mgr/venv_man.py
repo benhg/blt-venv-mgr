@@ -16,7 +16,7 @@ import collections
 
 class Config:
     def __init__(self):
-        self.BASE_VENV_PATH = "/Users/ben/bread/venv"
+        self.BASE_VENV_PATH = "/bread/venv"
 
 
 config = Config()
