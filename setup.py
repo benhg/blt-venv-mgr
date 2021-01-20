@@ -6,8 +6,7 @@ with open(os.path.join("blt_venv_mgr", "version.py")) as f:
     exec(f.read(), version_ns)
 version = version_ns['VERSION']
 
-with open('requirements.txt') as f:
-    install_requires = f.readlines()
+install_requires = ["virtualenv"]
 
 setup(
     name='blt_venv_mgr',
