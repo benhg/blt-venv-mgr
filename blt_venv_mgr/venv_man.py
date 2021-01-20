@@ -136,6 +136,9 @@ def parse_args():
     if len(args.remove) > 0:
         remove_pkgs(args.remove, args.name)
 
+    if args.show:
+        show_pkgs(args.name)
+
     return args
 
 
@@ -222,6 +225,16 @@ def remove_pkgs(pkgs, name):
     cmd_base += "deactivate"
     subprocess.check_call(cmd_base, shell=True)
 
+def show_pkgs(name):
+    """
+    Print all package names in a virtualenv specified by :param name
+    """
+    if not _venv_exists(name):
+        print(f"ERROR: Could not find virtualenv {name}")
+        sys.exit(1)
+    cmd_base = f"\tsource {_dir_path(name)}/bin/activate;"
+    cmd_base += "pip freeze --local"
+    subprocess.check_call(cmd_base, shell=True)
 
 def _dir_path(name):
     return f"{config.BASE_VENV_PATH}/{name}"
