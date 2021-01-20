@@ -11,11 +11,13 @@ BLT-specific script for creating, deleting,
 import argparse
 import sys
 import os
+import collections
 
-config = {
-    "BASE_VENV_PATH": "/bread/venv"
-}
+class Config:
+    def __init__(self):
+        self.BASE_VENV_PATH = "/Users/ben/bread/venv"
 
+config = Config()
 
 import argparse
 
@@ -88,8 +90,18 @@ def parse_args():
 
     return args
 
+def list_venvs():
+    print("Listing Virtual Environments:")
+    directories = os.listdir(config["BASE_VENV_PATH"])
+    for directory in directories:
+        if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
+            print(f"{directory}")
+
 def run_cmds(args):
-    pass
+
+    if args.list:
+        list_venvs()
+        sys.exit(0)
 
 if __name__ == '__main__':
     args = parse_args()
