@@ -67,6 +67,10 @@ def parse_args():
         print("ERROR: All arguments except `--list` require a venv name.")
         sys.exit(1)
 
+    if args.list:
+        list_venvs()
+        sys.exit(0)
+
     # At this point, we know args.name is set.
     if args.list:
         print("ERROR: Cannot list when args.name is specified.")
@@ -97,12 +101,6 @@ def list_venvs():
         if os.path.isdir(directory) and os.path.exists(f"{config.BASE_VENV_PATH}/{directory}/bin/activate"):
             print(f"{directory}")
 
-def run_cmds(args):
-
-    if args.list:
-        list_venvs()
-        sys.exit(0)
 
 if __name__ == '__main__':
     args = parse_args()
-    run_cmds(args)
